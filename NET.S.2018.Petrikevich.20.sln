@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XML.Logic", "XML.Logic\XML.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XML.Ul", "XML.Ul\XML.Ul.csproj", "{C164EC8B-4C3A-47A1-B14E-A78F703ED08F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabExam", "LabExam\LabExam.csproj", "{3DAD1B95-FBB8-468E-8AFE-98DC3C6E8480}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C164EC8B-4C3A-47A1-B14E-A78F703ED08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C164EC8B-4C3A-47A1-B14E-A78F703ED08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C164EC8B-4C3A-47A1-B14E-A78F703ED08F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DAD1B95-FBB8-468E-8AFE-98DC3C6E8480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DAD1B95-FBB8-468E-8AFE-98DC3C6E8480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DAD1B95-FBB8-468E-8AFE-98DC3C6E8480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DAD1B95-FBB8-468E-8AFE-98DC3C6E8480}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

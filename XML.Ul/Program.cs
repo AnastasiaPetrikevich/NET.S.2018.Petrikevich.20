@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XML.Logic;
+using XML.Logic.Logger;
 using static XML.Logic.CreateXML;
 
 namespace XML.Ul
@@ -11,12 +13,8 @@ namespace XML.Ul
     {
         static void Main(string[] args)
         {
-            List<string> url = new List<string>();
-            url.Add("https://github.com/AnzhelikaKravchuk?tab=repositories");
-            url.Add("https://github.com/AnzhelikaKravchuk/2017-2018.MMF.BSU");
-            url.Add("https://habrahabr.ru/company/it-grad/blog/341486/");
-
-            CreateXmlFromUrl(url, @"C:\Users\Анастасия\Desktop\xmlFile.xml");
+            FileProvider provider=new FileProvider(@"C:\Users\Анастасия\Source\Repos\XML\XML.Ul\url.txt", new Parser(), new NLogger());
+            CreateXmlFromUrl(provider.Load(), @"C:\Users\Анастасия\Source\Repos\XML\XML.Ul\xmlFile.xml");
         }
     }
 }

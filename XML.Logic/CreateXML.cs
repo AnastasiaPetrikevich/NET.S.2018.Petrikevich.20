@@ -9,76 +9,52 @@ namespace XML.Logic
 {
     public static class CreateXML
     {
-        public static void CreateXmlFromUrl(IEnumerable<string> urlList, string fileName)
+        /// <summary>
+        /// Create XML document.
+        /// </summary>
+        /// <param name="urlList"></param>
+        /// <param name="fileName"></param>
+        public static void CreateXmlFromUrl(IEnumerable<URL> urlList, string fileName)
         {
             XDocument document = new XDocument();
+            XElement root = new XElement("urlAddresses");
+            
             foreach (var item in urlList)
             {
-                document.Add(CreateXmlFromUrl(item));
+                root.Add(CreateXmlElement(item));
             }
 
+            document.Add(root);
             document.Save(fileName);
         }
 
-        private static XElement CreateXmlFromUrl(string url)
+        /// <summary>
+        /// Create XML element from URL.
+        /// </summary>
+        /// <param name="url">URL.</param>
+        /// <returns>XML element.</returns>
+        private static XElement CreateXmlElement(URL url)
         {
-            XElement rootElement = new XElement("urlAdresses");
-            var tempStrings = UrlSubstring(url).Split('/');
+            XElement xmlElement = new XElement("urlAdresses");
+            XElement hostElement = new XElement("host", new XAttribute("name", url.HostName));
+            xmlElement.Add(hostElement);
 
-            XAttribute hostName = new XAttribute("host name", tempStrings[0]);
-            rootElement.Add(hostName);
-
-            XElement urlElement = new XElement("url");
-            for (int i = 1; i < tempStrings.Length; i++)
+            XElement uri = new XElement("uri");
+            foreach (var item in url.Segments)
             {
-                if (!tempStrings[i].Contains('?'))
-                {
-                    XElement element = new XElement("segment", tempStrings[i]);
-                    urlElement.Add(element);
-                }
-
-                else
-                {
-                    var tempElements = tempStrings[i].Split('?');
-                    for (int j = 0; j < tempElements.Length; j++)
-                    {
-                        if (!tempElements[j].Contains('='))
-                        {
-                            XElement element = new XElement("segment", tempElements[j]);
-                            urlElement.Add(element);
-                        }
-
-                        else
-                        {
-                            XElement parametrsElement = new XElement("parametrs");
-                            var tempAttribute = tempElements[j].Split('=');
-                            XAttribute attribute = new XAttribute("values", tempAttribute[1]);
-                            parametrsElement.Add(attribute);
-                            attribute = new XAttribute("key", tempAttribute[0]);
-                            parametrsElement.Add(attribute);
-                            rootElement.Add(parametrsElement);
-                        }
-                    }
-                }
+                uri.Add(new XElement("segment", item));
             }
-            rootElement.Add(urlElement);
+            xmlElement.Add(uri);
 
-            return rootElement;
-        }
-        
-        private static string UrlSubstring(string url)
-        {
-            if (url.Contains("http://"))
+            XElement parameters = new XElement("parameters");
+            foreach (var item in url.ParametersKeyValue)
             {
-                return url.Substring(7);
+                parameters.Add(new XElement("parameter", new XAttribute("value", item.Value), 
+                    new XAttribute("key", item.Key)));
             }
+            xmlElement.Add(parameters);
 
-            if (url.Contains("https://"))
-            {
-                return url.Substring(8);
-            }
-
-            throw new ArgumentException($"nameof(url) wrong url.");
+            return xmlElement;
         }
     }
 }

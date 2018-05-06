@@ -6,13 +6,27 @@ namespace LabExam
     /// <summary>
     /// made an abstract clss for inheritance.
     /// </summary>
-    internal abstract class Printer : IEquatable<Printer>
+    public abstract class Printer : IEquatable<Printer>
     {
-        public string Name { get; set; }
+        public string Name { get; protected set; }
 
         public string Model { get; protected set; }
 
-        public abstract void Print(FileStream fs);
+        public Printer(string name, string model)
+        {
+            Name = name;
+            Model = model;
+        }
+
+        public void Print(Stream fileStream)
+        {
+            OnStartPrint(new PrintEventArgs(this));
+            SimulatePrint(fileStream);
+            OnEndPrint(new PrintEventArgs(this));
+
+        }
+
+        protected abstract void SimulatePrint(Stream fileStream);
 
 
         public bool Equals(Printer other)
@@ -46,13 +60,22 @@ namespace LabExam
         }
 
 
-        public event EventHandler<PrintEventArgs> PrintEvent = delegate { };
+        public event EventHandler<PrintEventArgs> StartPrint = delegate { };
 
-        protected virtual void OnPrint(PrintEventArgs e) => PrintEvent?.Invoke(this, e);
-        
-        public void Printed(string message)
+        protected virtual void OnStartPrint(PrintEventArgs e) => StartPrint?.Invoke(this, e);
+
+        public event EventHandler<PrintEventArgs> EndPrint = delegate { };
+
+        protected virtual void OnEndPrint(PrintEventArgs e) => EndPrint?.Invoke(this, e);
+
+        public void StartPrinted(string message)
         {
-            OnPrint(new PrintEventArgs(message));
+            OnStartPrint(new PrintEventArgs(message));
+        }
+
+        public void EndPrinted(string message)
+        {
+            OnEndPrint(new PrintEventArgs(message));
         }
 
     }

@@ -8,13 +8,17 @@ namespace LabExam
 {
     public sealed class PrintEventArgs : EventArgs
     {
-        private string message;
+        public string Name { get; }
 
-        public PrintEventArgs(string message)
+        public string Model { get; }
+
+        public string Time { get; }
+
+        public PrintEventArgs(Printer printer)
         {
-            this.message = message;
+            Name = printer.Name;
+            Model = printer.Model;
+            Time = DateTime.Now.ToShortTimeString();
         }
-
-        public string Message => message;
     }
 }

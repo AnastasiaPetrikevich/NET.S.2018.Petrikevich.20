@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using NLog;
 
 namespace LabExam
 {
-    internal class PrinterManager : IEnumerable<Printer>
+    internal sealed class PrinterManager : IEnumerable<Printer>
     {
         public static List<Printer> Printers { get; set; }
 
@@ -36,36 +37,19 @@ namespace LabExam
                 throw new ArgumentNullException(nameof(model));
             }
 
-            if (name == "Canon")
+            var printer = new PrinterFactory().CreatePrinter(name, model);
+
+            if (!Printers.Contains(printer))
             {
-                var canonPrinter = new CanonPrinter(model);
-                if (!Printers.Contains(canonPrinter))
-                {
-                    Printers.Add(canonPrinter);
-                    Console.WriteLine("Printer added.");
-                    logger.Debug("Printer successfully added.");
-                }
+                printer.StartPrint += (sender, args) => logger.Debug($"Printer {printer.Name} {printer.Model} start printing at {args.Time}");
+                printer.EndPrint += (sender, args) => logger.Debug($"Printer {printer.Name} {printer.Model} end printing at {args.Time}");
+
+                Printers.Add(printer);
+                Console.WriteLine("Printer added.");
+                logger.Debug("Printer successfully added.");
             }
-
-            if (name == "Epson")
-            {
-                var epsonPrinter = new EpsonPrinter(model);
-                if (!Printers.Contains(epsonPrinter))
-                {
-                    Printers.Add(epsonPrinter);
-                    Console.WriteLine("Printer added.");
-                    logger.Debug("Printer successfully added.");
-                }
-            }
-
-            else
-            {
-                Console.WriteLine("Unknown printer model.");
-                logger.Debug("Unknown printer model.");
-            }
-
-
         }
+
 
         /// <summary>
         /// Added events and logging.
@@ -73,16 +57,22 @@ namespace LabExam
         /// <param name="printer">printer</param>
         public void Print(Printer printer)
         {
+            if (!Printers.Contains(printer))
+            {
+                throw new ArgumentException($"No such printer {nameof(printer)}.");
+            }
+            
             logger.Debug("Print started.");
-
             using (var o = new OpenFileDialog())
             {
                 o.ShowDialog();
-                var f = File.OpenRead(o.FileName);
-                printer.Print(f);
+                using (var file = File.OpenRead(o.FileName))
+                {
+                    printer.Print(file);
+                }
             }
-            
             logger.Debug("Print finished.");
+
         }
 
         public bool Contains(Printer printer)
@@ -90,21 +80,6 @@ namespace LabExam
             var equalityComparer = EqualityComparer<Printer>.Default;
 
             return Printers.Contains(printer, equalityComparer);
-        }
-
-        public void Subscribe(Printer printer)
-        {
-            printer.PrintEvent += Printing;
-        }
-
-        public void Unsubscribe(Printer printer)
-        {
-            printer.PrintEvent -= Printing;
-        }
-
-        public void Printing(object sender, PrintEventArgs e)
-        {
-            Console.WriteLine(e.Message);
         }
 
         public IEnumerator<Printer> GetEnumerator()

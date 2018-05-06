@@ -20,15 +20,12 @@ namespace LabExam
             Model = model;
         }
 
-        public override void Print(FileStream fs)
+        protected override void SimulatePrint(Stream fs)
         {
-            using (fs)
+            for (int i = 0; i < fs.Length; i++)
             {
-                for (int i = 0; i < fs.Length; i++)
-                {
-                    // simulate printing
-                    Console.WriteLine(fs.ReadByte());
-                }
+                // simulate printing
+                Console.WriteLine(fs.ReadByte());
             }
         }
 

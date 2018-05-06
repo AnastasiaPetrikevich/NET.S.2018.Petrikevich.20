@@ -54,6 +54,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="NLogger.cs" />
     <Compile Include="Printer.cs" />
+    <Compile Include="PrinterFactory.cs" />
     <Compile Include="PrinterManager.cs" />
     <Compile Include="PrintEventArgs.cs" />
     <Compile Include="Program.cs" />
